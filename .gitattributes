@@ -1,0 +1,8 @@
+# Force LF for shell scripts and Go files
+*.sh text eol=lf
+*.go text eol=lf
+go.mod text eol=lf
+go.sum text eol=lf
+
+# Prevent Git from tracking local MySQL files
+data/mysql/* -text
