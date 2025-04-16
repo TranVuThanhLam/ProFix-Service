@@ -43,22 +43,21 @@ services:
     networks:
       - app-network
 
-
   # Backend service 2 (Golang)
-  # backend2:
-  #   build: ./backend
-  #   container_name: backend2
-  #   command: ["./scripts/wait-for-it.sh", "db", "3306", "--", "./main"]
-  #   ports:
-  #     - "8081:8080"
-  #   depends_on:
-  #     - db
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
-  #     interval: 10s
-  #     retries: 5
-  #   networks:
-  #     - app-network
+  backend2:
+    build: ./backend
+    container_name: backend2
+    command: ["./scripts/wait-for-it.sh", "db", "3306", "--", "./main"]
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 10s
+      retries: 5
+    networks:
+      - app-network
 
   # Database service (MySQL)
  
