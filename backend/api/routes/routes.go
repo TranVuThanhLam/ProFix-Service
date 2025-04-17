@@ -1,8 +1,30 @@
 package routes
 
+// restaurant := server.Group("/restaurant")
+// {
+// 	restaurant.GET("/:restaurant_id", services.GetRestaurantByID)
+// 	restaurant.GET("/:restaurant_id/tables", services.GetAllTables)
+// }
+// server.GET("/table/:table_id", services.GetTableByID)
+
+// // Các route xác thực
+// AuthRoutes(server)
+
+// Guest(server)
+
+// // Các route người dùng với quyền riêng
+// User := server.Group("/")
+// User.Use(middlewares.AuthMiddleware())
+// {
+// 	AdminRoutes(User)
+// 	OwnerRoutes(User)
+// 	CustomerRoutes(User)
+// 	// StaffRoutes(User)
+// }
+
 import (
 	"net/http"
-	"pro-fix-service/internal/db"
+	"profix-service/internal/db"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
