@@ -1,13 +1,17 @@
 FROM nginx:alpine
 
-
 RUN rm /etc/nginx/conf.d/default.conf
-
-# Cài đặt netcat (nc) để kiểm tra kết nối tới backend
-# RUN apk add --no-cache netcat-openbsd
 COPY default.conf /etc/nginx/conf.d/default.conf
-# # Dùng entrypoint script để chờ backend trước khi khởi động Nginx
-CMD ["sh", "-c", "until nc -z backend 8080; do echo Waiting for backend to be up...; sleep 5; done; nginx -g 'daemon off;'"]
 
-# Expose port 4000 cho Nginx
+# Cài netcat để kiểm tra kết nối
+RUN apk add --no-cache netcat-openbsd
+
+# Thêm script chờ backend
+COPY wait-for-backends.sh /wait-for-backends.sh
+RUN chmod +x /wait-for-backends.sh
+
+# Dùng script như entrypoint
+CMD ["/wait-for-backends.sh"]
+
+# EXPOSE 4000
 
