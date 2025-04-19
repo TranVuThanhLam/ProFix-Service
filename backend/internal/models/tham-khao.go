@@ -13,7 +13,7 @@ package models
 // 	Name      string `json:"name"`
 // 	Email     string `json:"email"`
 // 	Password  string `json:"password"`
-// 	Phone     string `json:"phone"`
+// 	Phone     strwing `json:"phone"`
 // 	Role      string `json:"role"`
 // 	Status    string `json:"status"`
 // 	Image_url string `json:"image_url"`
