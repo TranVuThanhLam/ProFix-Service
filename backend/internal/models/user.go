@@ -1,7 +1,10 @@
 package models
 
 import (
+	"errors"
+	"fmt"
 	"profix-service/internal/db" // hoặc path đúng đến package db của bạn
+	"profix-service/internal/utils"
 )
 
 type User struct {
@@ -18,8 +21,8 @@ type User struct {
 func (u *User) Create() (int64, error) {
 	query := `INSERT INTO users (name, email, password, phone, role, status, image_url)
 			  VALUES (?, ?, ?, ?, ?, ?, ?)`
-
-	result, err := db.DB.Exec(query, u.Name, u.Email, u.Password, u.Phone, u.Role, u.Status, u.Image_url)
+	fmt.Println("role", u.Role);
+	result, err := db.DB.Exec(query, u.Name, u.Email, u.Password, u.Phone, u.Role, "active", u.Image_url)
 	if err != nil {
 		return 0, err
 	}
@@ -71,3 +74,57 @@ func DeleteUser(id int64) error {
 	_, err := db.DB.Exec(query, id)
 	return err
 }
+// ===================================================================================
+
+func (u *User) Login() error {
+	retrievedPassword, ok := CheckUser(u)
+	if ok {
+		return errors.New("email does not exist")
+	}
+	if u.Status == "inactive" {
+		return errors.New("this User is locked or ban by admin. Check your email or contact us")
+	}
+	ok = utils.PasswordVerify(u.Password, retrievedPassword)
+	if !ok {
+		return errors.New("invalid Password")
+	}
+	return nil
+}
+
+func CheckUser(user *User) (string, bool) {
+	Query := `
+	SELECT id, password, status FROM users
+	WHERE gmail = ?
+	`
+	rowUser := db.DB.QueryRow(Query, user.Email)
+
+	var retrievedPassword string
+	var err error
+	err = rowUser.Scan(&user.Id, &retrievedPassword)
+	if err == nil {
+		user.Role = "admin"
+		return retrievedPassword, false
+	} else {
+		err = rowStaff.Scan(&user.Id, &retrievedPassword, &user.Status)
+		if err == nil {
+			user.Role = "staff"
+			return retrievedPassword, false
+		} else {
+			err = rowOwner.Scan(&user.Id, &retrievedPassword, &user.Status)
+			if err == nil {
+				user.Role = "owner"
+				return retrievedPassword, false
+			} else {
+				err = rowCustomer.Scan(&user.Id, &retrievedPassword, &user.Status)
+				if err == nil {
+					user.Role = "customer"
+					return retrievedPassword, false
+				} else {
+					fmt.Printf("Don't have any User like this")
+					return "", true
+				}
+			}
+		}
+	}
+}
+

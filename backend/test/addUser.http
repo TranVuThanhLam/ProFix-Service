@@ -1,4 +1,4 @@
-POST http://localhost:81/api/user
+POST http://localhost:8080/register
 Content-Type: application/json
 
 {
@@ -6,6 +6,6 @@ Content-Type: application/json
   "email": "john@example.com",
   "password": "12345678",
   "phone": "0123456789",
-  "role": "user",
+  "role": "customer",
   "image_url": "https://example.com/avatar.jpg"
 }

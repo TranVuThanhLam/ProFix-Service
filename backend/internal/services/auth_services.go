@@ -1,8 +1,10 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 	"profix-service/internal/models"
+	"profix-service/internal/utils"
 	"sync"
 	"time"
 
@@ -24,53 +26,51 @@ var pinStorage = sync.Map{}
 func Register(context *gin.Context) {
 	var user models.User
 	err := context.ShouldBindBodyWithJSON(&user)
+	fmt.Println("user", user)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Can't read your input information"})
 		return
 	}
 	_ , err = user.Create()
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Can't create user"})
 		return
-	}  else {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "role not included"})
-	}
-
+	} 
 	context.JSON(http.StatusCreated, gin.H{"Message": "Register successfully !!"})
 }
 
-// func Login(context *gin.Context) {
-// 	if _, err := context.Cookie("token"); err == nil {
-// 		context.JSON(http.StatusBadRequest, gin.H{"message": "You have already logged in"})
-// 		return
-// 	}
+func Login(context *gin.Context) {
+	if _, err := context.Cookie("token"); err == nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "You have already logged in"})
+		return
+	}
 
-// 	var user models.User
-// 	if err := context.ShouldBindJSON(&user); err != nil {
-// 		context.JSON(http.StatusBadRequest, gin.H{"message": "Can't read your input information"})
-// 		return
-// 	}
+	var user models.User
+	if err := context.ShouldBindJSON(&user); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Can't read your input information"})
+		return
+	}
 
-// 	if err := user.Login(); err != nil {
-// 		context.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
-// 		return
-// 	}
+	if err := user.Login(); err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+		return
+	}
 
-// 	token, err := utils.GenerateToken(user.Id, user.Email, user.Role)
-// 	if err != nil {
-// 		context.JSON(http.StatusUnauthorized, gin.H{"message": "Can't generate token"})
-// 		return
-// 	}
+	token, err := utils.GenerateToken(user.Id, user.Email, user.Role)
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Can't generate token"})
+		return
+	}
 
-// 	// Chỉ set 1 cookie
-// 	context.SetCookie("token", token, 7200, "/", "", false, true)
+	// Chỉ set 1 cookie
+	context.SetCookie("token", token, 7200, "/", "", false, true)
 
-// 	context.JSON(http.StatusOK, gin.H{
-// 		"message": "Login successfully !!",
-// 		"token":   token,
-// 		"role":    user.Role,
-// 	})
-// }
+	context.JSON(http.StatusOK, gin.H{
+		"message": "Login successfully !!",
+		"token":   token,
+		"role":    user.Role,
+	})
+}
 
 // func ResendPin(context *gin.Context) {
 // 	var input struct {

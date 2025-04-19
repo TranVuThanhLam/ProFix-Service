@@ -17,10 +17,10 @@ function Navbar() {
           <img
             src="image/profix-service-logo.png"
             alt="ProFix Logo"
-            style={{ width: "50px" }}
+            style={{ width: "80px" }}
           />
           <a
-            className="navbar-brand ms-2"
+            className="navbar-brand"
             href="#"
             onClick={() => handleNavigation("/")}
           >

@@ -78,7 +78,7 @@ const Register = () => {
       setErrors(validationErrors);
       return;
     }
-    console.log(role);
+    console.log(role, name + " " + email + " " + password + " " + phone);
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/register`,
@@ -112,11 +112,11 @@ const Register = () => {
       >
         <ToastContainer />
         <div className="main container d-flex align-items-center justify-content-center">
-          <div className="col-md-6 col-sm-12">
+          <div className="">
             <div className="register-form">
               <form onSubmit={handleRegister}>
-                <div className="form-group my-2">
-                  <label className="form-label">Name</label>
+                <div className="input-group my-2">
+                  <span className="input-group-text">Name</span>
                   <input
                     type="text"
                     className="form-control"
@@ -128,8 +128,8 @@ const Register = () => {
                     <small className="text-danger">{errors.name}</small>
                   )}
                 </div>
-                <div className="form-group my-2">
-                  <label className="form-label">Email</label>
+                <div className="input-group my-2">
+                  <span className="input-group-text">Email</span>
                   <input
                     type="email"
                     className="form-control"
@@ -142,9 +142,23 @@ const Register = () => {
                     <small className="text-danger">{errors.email}</small>
                   )}
                 </div>
-                <div className="form-group my-2">
-                  <label className="form-label">Password</label>
+                <div className="input-group my-2">
+                  <span className="input-group-text">Phone</span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Phone Number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                  {errors.phone && (
+                    <small className="text-danger">{errors.phone}</small>
+                  )}
+                </div>
+                {/* ============================ */}
+                <div className="input-group my-2">
                   <div className="input-group">
+                    <span className="input-group-text">Password</span>
                     <input
                       type={showPassword ? "text" : "password"}
                       className="form-control"
@@ -163,13 +177,14 @@ const Register = () => {
                       />
                     </span>
                   </div>
+
                   {errors.password && (
                     <small className="text-danger">{errors.password}</small>
                   )}
                 </div>
-                <div className="form-group my-2">
-                  <label className="form-label">Confirm Password</label>
+                <div className="input-group my-2">
                   <div className="input-group">
+                    <span className="input-group-text">Confirm Password</span>
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       className="form-control"
@@ -196,21 +211,9 @@ const Register = () => {
                     </small>
                   )}
                 </div>
-                <div className="form-group my-2">
-                  <label className="form-label">Phone</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Phone Number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                  {errors.phone && (
-                    <small className="text-danger">{errors.phone}</small>
-                  )}
-                </div>
-                <div className="form-group my-2">
-                  <label className="form-label">Role</label>
+
+                <div className="input-group my-2">
+                  <span className="input-group-text">Role</span>
                   <select
                     className="form-control"
                     value={role}
@@ -242,7 +245,7 @@ const Register = () => {
         </div>
         <div className="sidenav d-flex align-items-center justify-content-center text-white text-center">
           <div className="register-main-text">
-            <h1>Restaurant</h1>
+            <h1>ProFix Service</h1>
             <h3>Register Page</h3>
             <p>Create an account to get started.</p>
           </div>

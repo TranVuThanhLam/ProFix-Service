@@ -31,6 +31,8 @@ import (
 )
 
 func Routes(server *gin.Engine) {
+	AuthRoutes(server)
+
 	// Define your routes here
 	server.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{

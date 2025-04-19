@@ -140,7 +140,7 @@ const Login = () => {
       >
         <div className="sidenav d-flex align-items-center justify-content-center text-white text-center">
           <div className="login-main-text">
-            <h1>Restaurant</h1>
+            <h1>ProFix Service</h1>
             <h3>Login Page</h3>
             <p>Login or register from here to access.</p>
           </div>
