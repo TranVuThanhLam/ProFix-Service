@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./authentication/Login/Login";
 import { BrowserRouter } from "react-router-dom";
-import Home from "./pages/Home";
 import Register from "./authentication/Register/Register";
+import Home from "./pages/Home/Home";
 
 function MainRoutes() {
   return (
