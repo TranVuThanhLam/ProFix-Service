@@ -23,6 +23,24 @@ type PinData struct {
 // Bộ nhớ tạm lưu PIN (dùng sync.Map để thread-safe)
 var pinStorage = sync.Map{}
 
+func Register(context *gin.Context) {
+	var user models.User
+	err := context.ShouldBindBodyWithJSON(&user)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Can't read your input information"})
+		return
+	}
+	_ , err = user.Create()
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}  else {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "role not included"})
+	}
+
+	context.JSON(http.StatusCreated, gin.H{"Message": "Register successfully !!"})
+}
+
 func Login(context *gin.Context) {
 	if _, err := context.Cookie("token"); err == nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "You have already logged in"})
@@ -120,45 +138,6 @@ func Logout(c *gin.Context) {
 	c.SetCookie("token", "", -1, "/", "192.168.16.55", false, true)
 	// Trả về phản hồi JSON
 	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
-}
-
-func Register(context *gin.Context) {
-	var u models.User
-	err := context.ShouldBindBodyWithJSON(&u)
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Can't read your input information"})
-		return
-	}
-	if u.Role == "customer" {
-		err = u.RegisterCustomer()
-		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			return
-		}
-	} else if u.Role == "admin" {
-		err = u.RegisterAdmin()
-		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			return
-		}
-	} else if u.Role == "owner" {
-		err = u.RegisterOwner()
-		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			return
-		}
-	} else if u.Role == "staff" {
-		err = u.RegisterStaff()
-		if err != nil {
-
-			context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			return
-		}
-	} else {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "role not included"})
-	}
-
-	context.JSON(http.StatusCreated, gin.H{"Message": "Register successfully !!"})
 }
 
 func ForgotPassword(context *gin.Context) {

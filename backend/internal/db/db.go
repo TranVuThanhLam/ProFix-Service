@@ -2,6 +2,8 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -11,9 +13,18 @@ var DB *sql.DB
 func InitDB() {
 	var err error = nil
 	DB, err = sql.Open("mysql", "root:123@tcp(db:3306)/profix-service?parseTime=true")
-	if err != nil {
-		panic("Cannot connect to database")
+	if err == nil && DB.Ping() == nil {
+		log.Println("Connected to db:3306")
+	} else {
+		log.Println("Failed to connect to db:3306, trying localhost:3307")
+	
+		DB, err = sql.Open("mysql", "root:123@tcp(localhost:3307)/profix-service?parseTime=true")
+		if err != nil || DB.Ping() != nil {
+			log.Fatalf("Cannot connect to either database: %v", err)
+		}
 	}
+	
+	
 	// _, err = DB.Exec("CREATE DATABASE IF NOT EXISTS `profix-service`")
 	// if err != nil {
 	// 	panic("Cannot create database: " + err.Error())
@@ -33,13 +44,13 @@ func createTable() {
 		email VARCHAR(100) UNIQUE NOT NULL,
 		password VARCHAR(255) NOT NULL,
 		phone VARCHAR(20),
-		role ENUM('user', 'provider', 'admin') NOT NULL,
+		role ENUM('customer', 'provider', 'admin') NOT NULL,
 		status ENUM('active', 'inactive') DEFAULT 'active',
 		image_url VARCHAR(255)
 	);`
 	_, err := DB.Exec(UserQuery)
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
 	}
 
 	ServiceQuery := `
