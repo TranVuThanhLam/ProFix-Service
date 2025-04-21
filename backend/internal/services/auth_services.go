@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"net/http"
 	"profix-service/internal/models"
 	"profix-service/internal/utils"
@@ -26,11 +25,15 @@ var pinStorage = sync.Map{}
 func Register(context *gin.Context) {
 	var user models.User
 	err := context.ShouldBindBodyWithJSON(&user)
-	fmt.Println("user", user)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Can't read your input information"})
 		return
 	}
+	hashPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return 
+	}
+	user.Password = hashPassword
 	_ , err = user.Create()
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Can't create user"})
@@ -51,8 +54,15 @@ func Login(context *gin.Context) {
 		return
 	}
 
-	if err := user.Login(); err != nil {
+	err := user.VerifyUser();
+	if  err != nil {
 		context.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+		return
+	}
+
+	user,err  = models.GetUserByID(user.Id)
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Can't find user"})
 		return
 	}
 
@@ -70,6 +80,38 @@ func Login(context *gin.Context) {
 		"token":   token,
 		"role":    user.Role,
 	})
+}
+
+func GetUserProfile(context *gin.Context) {
+	role := context.GetString("role")
+	if role == "" {
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "Can not get role"})
+		return
+	}
+	context.GetInt64("userID")
+	userID := context.GetInt64("userID")
+	if userID == 0 {
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "Can not get user id"})
+		return
+	}
+
+	var user models.User
+	user, err := models.GetUserByID(userID)
+	if err != nil {
+		// "Can not find user"
+		context.JSON(http.StatusUnauthorized, gin.H{"error (get User Profile)": err.Error()})
+	}
+
+	context.JSON(http.StatusOK, gin.H{"user": user})
+}
+
+// LogoutHandler xử lý đăng xuất
+func Logout(c *gin.Context) {
+	// Xóa cookie bằng cách đặt giá trị rỗng và thời gian hết hạn đã qua
+	c.SetCookie("token", "", -1, "/", "localhost", false, true)
+	c.SetCookie("token", "", -1, "/", "192.168.16.55", false, true)
+	// Trả về phản hồi JSON
+	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
 }
 
 // func ResendPin(context *gin.Context) {
@@ -105,38 +147,6 @@ func Login(context *gin.Context) {
 // 	context.JSON(http.StatusOK, gin.H{"message": "Mã PIN mới đã được gửi!"})
 // }
 
-// func GetUserProfile(c *gin.Context) {
-// 	c.GetString("role")
-// 	role := c.GetString("role")
-// 	if role == "" {
-// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Can not get role"})
-// 		return
-// 	}
-// 	c.GetInt64("userID")
-// 	userID := c.GetInt64("userID")
-// 	if userID == 0 {
-// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Can not get user id"})
-// 		return
-// 	}
-
-// 	var user models.User
-// 	user, err := models.GetUserInformationById(userID, role)
-// 	if err != nil {
-// 		// "Can not find user"
-// 		c.JSON(http.StatusUnauthorized, gin.H{"error (get User Profile)": err.Error()})
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{"user": user})
-// }
-
-// // LogoutHandler xử lý đăng xuất
-// func Logout(c *gin.Context) {
-// 	// Xóa cookie bằng cách đặt giá trị rỗng và thời gian hết hạn đã qua
-// 	c.SetCookie("token", "", -1, "/", "localhost", false, true)
-// 	c.SetCookie("token", "", -1, "/", "192.168.16.55", false, true)
-// 	// Trả về phản hồi JSON
-// 	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
-// }
 
 // func ForgotPassword(context *gin.Context) user
 // 	var u models.User
@@ -148,7 +158,7 @@ func Login(context *gin.Context) {
 // 	}
 
 // 	// Kiểm tra tài khoản có tồn tại không
-// 	_, exists := models.CheckUser(&u)
+// 	_, exists := models.	(&u)
 // 	if exists {
 // 		context.JSON(http.StatusBadRequest, gin.H{"message": "Don't have any User like this"})
 // 		return

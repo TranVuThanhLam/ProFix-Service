@@ -92,15 +92,12 @@ const Login = () => {
         axios
           .get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true })
           .then((res) => {
-            const userData = res.data.user;
             setTimeout(() => {
               const userRole = res.data.user.Role;
               console.log(userRole);
               if (userRole === "admin") {
                 navigate("/admin");
-              } else if (userRole === "owner") {
-                navigate("/owner");
-              } else if (userRole === "staff") {
+              } else if (userRole === "provider") {
                 navigate("/");
               } else if (userRole === "customer") {
                 navigate("/");

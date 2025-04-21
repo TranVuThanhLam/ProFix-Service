@@ -91,6 +91,15 @@ function Navbar() {
                 Register
               </a>
             </li>
+            <li className="nav-item">
+              <a
+                className="nav-link"
+                href="#"
+                onClick={() => handleNavigation("/logout")}
+              >
+                logout
+              </a>
+            </li>
           </ul>
         </div>
       </div>

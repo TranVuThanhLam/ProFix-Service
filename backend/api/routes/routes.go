@@ -25,6 +25,8 @@ package routes
 import (
 	"net/http"
 	"profix-service/internal/db"
+	"profix-service/internal/models"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
@@ -32,6 +34,7 @@ import (
 
 func Routes(server *gin.Engine) {
 	AuthRoutes(server)
+	server.DELETE("/user/:id", deleteUser)
 
 	// Define your routes here
 	server.GET("/ping", func(c *gin.Context) {
@@ -53,34 +56,23 @@ func Routes(server *gin.Engine) {
 		})
 	})
 
-	server.GET("/api", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status": "hi api",
-		})
-	})
-	server.GET("/api2", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status": "hi api 2",
-		})
-	})
-
 	server.POST("user", addUser)
 	server.GET("user", getAllUsers)
 }
 
-type User struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
-	Phone    string `json:"phone"`
-	Role     string `json:"role" binding:"required,oneof=user provider admin"`
-	Status   string `json:"status"` // mặc định active nếu không truyền
-	ImageURL string `json:"image_url"`
+func deleteUser(context *gin.Context) {
+	id := context.Param("id")
+    idInt64, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+	models.DeleteUser(idInt64)
+	context.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
 
 func addUser(c *gin.Context) {
-	var newUser User
+	var newUser models.User
 
 	if err := c.ShouldBindJSON(&newUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -96,7 +88,7 @@ func addUser(c *gin.Context) {
 		INSERT INTO users (name, email, password, phone, role, status, image_url)
 		VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
-	_, err := db.DB.Exec(query, newUser.Name, newUser.Email, newUser.Password, newUser.Phone, newUser.Role, newUser.Status, newUser.ImageURL)
+	_, err := db.DB.Exec(query, newUser.Name, newUser.Email, newUser.Password, newUser.Phone, newUser.Role, newUser.Status, newUser.ImageUrl)
 	if err != nil {
 		// kiểm tra lỗi duplicate email
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok && mysqlErr.Number == 1062 {
@@ -110,6 +102,9 @@ func addUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 
+
+
+
 func getAllUsers(c *gin.Context) {
 	rows, err := db.DB.Query(`SELECT id, name, email, phone, role, status, image_url FROM users`)
 	if err != nil {
@@ -118,18 +113,18 @@ func getAllUsers(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var users []User
+	var users []models.User
 
 	for rows.Next() {
-		var user User
+		var user models.User
 		err := rows.Scan(
-			&user.ID,
+			&user.Id,
 			&user.Name,
 			&user.Email,
 			&user.Phone,
 			&user.Role,
 			&user.Status,
-			&user.ImageURL,
+			&user.ImageUrl,
 		)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning user data"})

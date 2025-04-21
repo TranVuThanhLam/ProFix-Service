@@ -3,6 +3,7 @@ import Login from "./authentication/Login/Login";
 import { BrowserRouter } from "react-router-dom";
 import Register from "./authentication/Register/Register";
 import Home from "./pages/Home/Home";
+import Logout from "./utils/Logout";
 
 function MainRoutes() {
   return (
@@ -11,6 +12,7 @@ function MainRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/logout" element={<Logout />} />
       </Routes>
     </BrowserRouter>
   );

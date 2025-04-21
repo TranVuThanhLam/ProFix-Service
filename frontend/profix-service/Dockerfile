@@ -8,6 +8,7 @@ RUN npm install -g serve && npm install
 
 # Copy toàn bộ mã nguồn và build
 COPY . .
+COPY .env.prod .env
 RUN npm run build
 
 EXPOSE 3000
