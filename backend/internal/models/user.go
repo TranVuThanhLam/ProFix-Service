@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"profix-service/internal/db" // hoặc path đúng đến package db của bạn
 	"profix-service/internal/utils"
 )
@@ -99,7 +98,6 @@ func CheckUser(user *User) (string, error) {
 	var retrievedPassword string
 	// var err error
 	err := rowUser.Scan(&user.Id, &retrievedPassword, &user.Status)
-	fmt.Println("user pass", retrievedPassword)
 	if err == nil && user.Status == "active" {
 		return retrievedPassword, nil
 	} else if err == nil && user.Status == "inactive" {

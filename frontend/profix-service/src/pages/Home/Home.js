@@ -1,10 +1,11 @@
-import React from "react";
+import React, { use, useEffect } from "react";
 import MainLayout from "../../layout/main_layout/MainLayout";
 import { motion } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 function Home() {
+  // if (loading) return <div>Loading...</div>;
   return (
     <MainLayout>
       <div className="container text-center my-5">

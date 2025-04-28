@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import useMe from "../../../hooks/useMe";
 function Navbar() {
   const navigate = useNavigate();
+  const { me, loading } = useMe();
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -67,39 +68,64 @@ function Navbar() {
                 Contact
               </a>
             </li>
+            <li className="nav-item">
+              <a
+                className="nav-link"
+                href="#"
+                onClick={() => handleNavigation("/chat")}
+              >
+                Chat
+              </a>
+            </li>
           </ul>
         </div>
 
         {/* Right Section */}
         <div className="d-flex align-items-center justify-content-center">
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                onClick={() => handleNavigation("/login")}
-              >
-                Login
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                onClick={() => handleNavigation("/register")}
-              >
-                Register
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                onClick={() => handleNavigation("/logout")}
-              >
-                logout
-              </a>
-            </li>
+            {!me ? (
+              <>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    href="#"
+                    onClick={() => handleNavigation("/login")}
+                  >
+                    Login
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    href="#"
+                    onClick={() => handleNavigation("/register")}
+                  >
+                    Register
+                  </a>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    href="#"
+                    onClick={() => handleNavigation("/personal")}
+                  >
+                    {me.name}
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    href="#"
+                    onClick={() => handleNavigation("/logout")}
+                  >
+                    Logout
+                  </a>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

@@ -72,7 +72,8 @@ func Login(context *gin.Context) {
 		return
 	}
 
-	// Chỉ set 1 cookie
+	// Chỉ set 1 cookie``
+	context.SetCookie("token", token, 7200, "/", "", true, true)
 	context.SetCookie("token", token, 7200, "/", "", false, true)
 
 	context.JSON(http.StatusOK, gin.H{
@@ -83,11 +84,6 @@ func Login(context *gin.Context) {
 }
 
 func GetUserProfile(context *gin.Context) {
-	role := context.GetString("role")
-	if role == "" {
-		context.JSON(http.StatusUnauthorized, gin.H{"error": "Can not get role"})
-		return
-	}
 	context.GetInt64("userID")
 	userID := context.GetInt64("userID")
 	if userID == 0 {
@@ -108,8 +104,9 @@ func GetUserProfile(context *gin.Context) {
 // LogoutHandler xử lý đăng xuất
 func Logout(c *gin.Context) {
 	// Xóa cookie bằng cách đặt giá trị rỗng và thời gian hết hạn đã qua
-	c.SetCookie("token", "", -1, "/", "localhost", false, true)
-	c.SetCookie("token", "", -1, "/", "192.168.16.55", false, true)
+	c.SetCookie("token", "", -1, "/", "", true, true)
+	c.SetCookie("token", "", -1, "/", "", false, true)
+	// c.SetCookie("token", "", -1, "/", "192.168.16.55", false, true)
 	// Trả về phản hồi JSON
 	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
 }

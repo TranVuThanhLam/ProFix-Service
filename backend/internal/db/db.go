@@ -3,38 +3,50 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var DB *sql.DB
+var IsDBConnected = false
 
 func InitDB() {
-	var err error = nil
-	DB, err = sql.Open("mysql", "root:123@tcp(db:3306)/profix-service?parseTime=true")
-	if err == nil && DB.Ping() == nil {
-		log.Println("Connected to db:3306")
-	} else {
-		log.Println("Failed to connect to db:3306, trying localhost:3307")
-	
-		DB, err = sql.Open("mysql", "root:123@tcp(localhost:3307)/profix-service?parseTime=true")
-		if err != nil || DB.Ping() != nil {
-			log.Fatalf("Cannot connect to either database: %v", err)
-		}
+	// time.Sleep(5 * time.Second) // Đợi 5 giây trước khi kết nối đến DB
+	var err error
+	dsnList := []string{
+		"root:123@tcp(db:3306)/profix-service?parseTime=true",
+		"root:123@tcp(localhost:3306)/profix-service?parseTime=true",
+		"root:123@tcp(localhost:3307)/profix-service?parseTime=true",
 	}
-	
-	
-	// _, err = DB.Exec("CREATE DATABASE IF NOT EXISTS `profix-service`")
-	// if err != nil {
-	// 	panic("Cannot create database: " + err.Error())
-	// }
-	// DB.Close()
+
+	for _, dsn := range dsnList {
+		DB, err = sql.Open("mysql", dsn)
+		if err != nil {
+			fmt.Println("Error opening DB with DSN:", dsn, err)
+			continue
+		}
+
+		err = DB.Ping()
+		if err != nil {
+			fmt.Println("Cannot ping DB with DSN:", dsn, err)
+			continue
+		}
+
+		IsDBConnected = true
+		fmt.Println("Connected and pinged DB successfully with DSN:", dsn)
+		break
+	}
+
+	if !IsDBConnected {
+		fmt.Println("Failed to connect to any DB instance")
+	}
+
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
 
 	createTable()
 }
+
 
 func createTable() {
 	UserQuery := `

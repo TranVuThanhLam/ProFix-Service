@@ -11,9 +11,10 @@ import (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		token, err := context.Cookie("token")
+		fmt.Println("token: ", token)
 		if err != nil {
-			context.JSON(http.StatusUnauthorized, gin.H{"error": "Can not get token from cookie"})
-			// context.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			// context.JSON(http.StatusUnauthorized, gin.H{"error": "Can not get token from cookie"})
+			context.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			context.Abort()
 			return
 		}

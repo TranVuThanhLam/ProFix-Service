@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import Register from "./authentication/Register/Register";
 import Home from "./pages/Home/Home";
 import Logout from "./utils/Logout";
+import Chat from "./pages/Chat/Chat";
 
 function MainRoutes() {
   return (
@@ -13,6 +14,7 @@ function MainRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
     </BrowserRouter>
   );

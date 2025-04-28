@@ -1,0 +1,3 @@
+GET http://localhost:8080/me
+Content-Type: application/json
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImdtYWlsIjoidGhhbmhsYW0yMDA2MjAwM0BnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE3NDU2NDU5MzV9.m77pVOy2YXpUhImMQMTb7GlQotkUmU51hK1HOtYq_cY

@@ -42,8 +42,8 @@ const Login = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true })
       .then((res) => {
-        // console.log(res.data.user.Role)
-        handleNavigation(res.data.user.Role);
+        // console.log(res.data.user.role)
+        handleNavigation(res.data.user.role);
       })
       .catch((err) => {
         console.log("login dum tui", err);
@@ -82,7 +82,10 @@ const Login = () => {
     try {
       let res = await axios.post(
         `${process.env.REACT_APP_API_URL}/login`,
-        { Email: email, Password: password },
+        {
+          Email: email,
+          Password: password,
+        },
         { withCredentials: true }
       );
 
@@ -93,7 +96,7 @@ const Login = () => {
           .get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true })
           .then((res) => {
             setTimeout(() => {
-              const userRole = res.data.user.Role;
+              const userRole = res.data.user.role;
               console.log(userRole);
               if (userRole === "admin") {
                 navigate("/admin");

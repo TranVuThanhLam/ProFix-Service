@@ -34,6 +34,7 @@ import (
 
 func Routes(server *gin.Engine) {
 	AuthRoutes(server)
+	RegisterChatRoutes(server)
 	server.DELETE("/user/:id", deleteUser)
 
 	// Define your routes here
