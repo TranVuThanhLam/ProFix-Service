@@ -8,7 +8,7 @@ type Booking struct {
 	ServiceId   string `json:"service_id"`
 	BookingTime string `json:"booking_time"`
 	Status      string `json:"status"`
-	TotalPrice  string `json:"total_price"`
+	TotalPrice  int `json:"total_price"`
 	CreatedAt   string `json:"created_at"`
 }
 

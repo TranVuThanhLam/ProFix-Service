@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
+	"profix-service/internal/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -25,14 +25,24 @@ var upgrader = websocket.Upgrader{
 
 
 func chatHandler(c *gin.Context) {
-	userIDStr := c.Query("user_id")
-
-	userID, err := strconv.Atoi(userIDStr)
+	// Lấy token từ cookie
+	token, err := c.Cookie("token")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
+	// Sử dụng hàm ParseJWT để xác thực token
+	claims, err := utils.ParseJWT(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return
+	}
+
+	// Nếu token hợp lệ, lấy userID từ claims
+	userID := int(claims.UserID)
+	
+	// Kết nối WebSocket
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Println("WebSocket upgrade failed:", err)

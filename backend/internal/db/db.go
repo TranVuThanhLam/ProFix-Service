@@ -71,7 +71,7 @@ func createTable() {
 		provider_id INT NOT NULL,
 		title VARCHAR(100) NOT NULL,
 		description TEXT,
-		price DECIMAL(10,2),
+		price INT,
 		category VARCHAR(50),
 		status ENUM('available', 'unavailable') DEFAULT 'available',
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -89,7 +89,7 @@ func createTable() {
 		service_id INT NOT NULL,
 		booking_time DATETIME NOT NULL,
 		status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
-		total_price DECIMAL(10,2),
+		total_price INT,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		FOREIGN KEY (user_id) REFERENCES users(id),
 		FOREIGN KEY (service_id) REFERENCES services(id)

@@ -1,0 +1,14 @@
+package routes
+
+import "github.com/gin-gonic/gin"
+
+func CustomerRoutes(r *gin.RouterGroup) {
+	// customer := r.Group("/customer")
+	// {
+	// 	customer.GET("/users", services.GetAllUsers)
+	// 	customer.GET("/users/:id", services.GetUserByID)
+	// 	customer.POST("/users", services.CreateUser)
+	// 	customer.PUT("/users/:id", services.UpdateUser)
+	// 	customer.DELETE("/users/:id", services.DeleteUser)
+	// }
+}

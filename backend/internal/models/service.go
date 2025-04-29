@@ -2,23 +2,24 @@ package models
 
 import (
 	"profix-service/internal/db"
+	"time"
 )
 
 type Service struct {
 	ID          int    `json:"id"`
-	CreatedAt   string `json:"created_at"`
 	Status      string `json:"status"`
 	Category    string `json:"category"`
-	Price       string `json:"price"`
+	Price       int `json:"price"`
 	Description string `json:"description"`
 	Title       string `json:"title"`
 	ProviderId  int64  `json:"provider_id"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 func (s *Service) Create() (int64, error) {
-	query := `INSERT INTO services (created_at, status, category, price, description, title, provider_id)
-			  VALUES (?, ?, ?, ?, ?, ?, ?)`
-	result, err := db.DB.Exec(query, s.CreatedAt, s.Status, s.Category, s.Price, s.Description, s.Title, s.ProviderId)
+	query := `INSERT INTO services (status, category, price, description, title, provider_id)
+			  VALUES (?, ?, ?, ?, ?, ?)`
+	result, err := db.DB.Exec(query, s.Status, s.Category, s.Price, s.Description, s.Title, s.ProviderId)
 	if err != nil {
 		return 0, err
 	}
