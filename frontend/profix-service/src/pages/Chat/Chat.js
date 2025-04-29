@@ -11,9 +11,24 @@ function Chat() {
   const [user, setUser] = useState({});
   const [messages, setMessages] = useState([]);
   const [ws, setWs] = useState(null);
-  const [sockets] = useState([`wss://${window.location.hostname}/ws`]);
   const [receiverId, setReceiverId] = useState(null);
   const navigate = useNavigate();
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  let socketUrl = "";
+
+  if (
+    window.location.hostname === "localhost" &&
+    window.location.port === "3000"
+  ) {
+    // Đang chạy local React => WebSocket tới backend ở 8080
+    socketUrl = `${protocol}://${window.location.hostname}:8080/wss`;
+  } else {
+    // Đang production => WebSocket theo domain hiện tại
+    socketUrl = `${protocol}://${window.location.hostname}/wss`;
+  }
+
+  const [sockets] = useState([socketUrl]);
+  const [connectionStatus, setConnectionStatus] = useState("Đang kết nối...");
 
   useEffect(() => {
     if (!user.id) return;
@@ -52,10 +67,25 @@ function Chat() {
     if (!user.id) return;
     let socket;
     const connectWebSocket = async () => {
+      setConnectionStatus("Đang kết nối...");
       const validSocketUrl = await getValidSocket(user.id);
       if (validSocketUrl) {
         socket = new WebSocket(validSocketUrl);
         setWs(socket);
+
+        socket.onopen = () => {
+          setConnectionStatus("Đã kết nối thành công!");
+        };
+
+        socket.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          setConnectionStatus("Kết nối thất bại!");
+        };
+
+        socket.onclose = () => {
+          setConnectionStatus("Đã ngắt kết nối");
+        };
+
         socket.onmessage = (event) => {
           const newMessage = JSON.parse(event.data);
           if (
@@ -65,6 +95,8 @@ function Chat() {
             setMessages((prev) => [...prev, newMessage]);
           }
         };
+      } else {
+        setConnectionStatus("Không tìm thấy server WebSocket!");
       }
     };
     connectWebSocket();
@@ -134,7 +166,7 @@ function Chat() {
                   key={person.id}
                   className={`d-flex align-items-center p-2 mb-2 rounded ${
                     receiverId === person.id
-                      ? "bg-primary text-white"
+                      ? "bg-primary text-white fw-bold"
                       : "bg-light"
                   }`}
                   style={{ cursor: "pointer" }}
@@ -145,6 +177,7 @@ function Chat() {
                     style={{ width: "10px", height: "10px" }}
                   ></div>
                   {person.name}
+                  {person.id == user.id ? " (me) " : ""}
                 </div>
               ))}
             </div>
@@ -160,8 +193,9 @@ function Chat() {
             <h6 className="mb-1">{user.name}</h6>
             <small className="text-muted">{user.email}</small>
           </div>
-          <div>
+          <div className="d-flex flex-column">
             <span className="badge bg-success">{user.role}</span>
+            <small className="text-muted">{connectionStatus}</small>
           </div>
         </div>
 
@@ -170,18 +204,31 @@ function Chat() {
           className="flex-grow-1 overflow-auto p-3 d-flex flex-column"
           style={{ background: "#f9fafb" }}
         >
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`py-2 px-3 mb-2 rounded-pill shadow-sm w-auto ${
-                msg.sender_id === user.id
-                  ? "bg-primary text-white align-self-end"
-                  : "bg-secondary text-white align-self-start"
-              }`}
-            >
-              {msg.content}
+          {receiverId ? (
+            messages
+              .filter(
+                (msg) =>
+                  (msg.sender_id === user.id &&
+                    msg.receiver_id === receiverId) ||
+                  (msg.sender_id === receiverId && msg.receiver_id === user.id)
+              )
+              .map((msg, index) => (
+                <div
+                  key={index}
+                  className={`py-2 px-3 mb-2 rounded-pill shadow-sm w-auto ${
+                    msg.sender_id === user.id
+                      ? "bg-primary text-white align-self-end"
+                      : "bg-secondary text-white align-self-start"
+                  }`}
+                >
+                  {msg.content}
+                </div>
+              ))
+          ) : (
+            <div className="text-center text-muted mt-5">
+              <h5>👉 Vui lòng chọn người để bắt đầu chat!</h5>
             </div>
-          ))}
+          )}
         </div>
 
         {/* Footer */}

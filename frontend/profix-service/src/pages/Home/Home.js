@@ -1,5 +1,5 @@
 import React, { use, useEffect } from "react";
-import MainLayout from "../../layout/main_layout/MainLayout";
+import CustomerLayout from "../../layout/CustomerLayout/CustomerLayout";
 import { motion } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -7,7 +7,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 function Home() {
   // if (loading) return <div>Loading...</div>;
   return (
-    <MainLayout>
+    <CustomerLayout>
       <div className="container text-center my-5">
         {/* Hero Section */}
         <motion.div
@@ -113,7 +113,7 @@ function Home() {
           </motion.div>
         </div>
       </div>
-    </MainLayout>
+    </CustomerLayout>
   );
 }
 

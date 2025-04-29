@@ -24,8 +24,8 @@ const Login = () => {
       console.log(Role);
       if (Role === "admin") {
         navigate("/admin");
-      } else if (Role === "owner") {
-        navigate("/owner");
+      } else if (Role === "provider") {
+        navigate("/provider");
       } else if (Role === "customer") {
         navigate("/");
       }
@@ -97,11 +97,10 @@ const Login = () => {
           .then((res) => {
             setTimeout(() => {
               const userRole = res.data.user.role;
-              console.log(userRole);
               if (userRole === "admin") {
                 navigate("/admin");
               } else if (userRole === "provider") {
-                navigate("/");
+                navigate("/provider");
               } else if (userRole === "customer") {
                 navigate("/");
               } else {

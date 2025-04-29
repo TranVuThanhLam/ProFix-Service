@@ -220,7 +220,7 @@ const Register = () => {
                     onChange={(e) => setRole(e.target.value)}
                   >
                     <option value="customer">Customer</option>
-                    <option value="owner">Owner</option>
+                    <option value="provider">Provider</option>
                   </select>
                 </div>
                 <div className="mt-4">

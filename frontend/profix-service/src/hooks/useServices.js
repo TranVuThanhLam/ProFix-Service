@@ -2,14 +2,14 @@
 import { useEffect, useState } from "react";
 import useApi from "../api/useAPI";
 
-export default function useMe() {
+export default function useServices() {
   const { data, loading, error, callApi } = useApi();
-  const [me, setMe] = useState(null);
+  const [services, setServices] = useState(null);
 
   useEffect(() => {
     (async () => {
       try {
-        await callApi({ method: "get", url: "/me" });
+        await callApi({ method: "get", url: "/services" });
       } catch (error) {
         console.log("Error fetching /me", error);
       }
@@ -17,10 +17,10 @@ export default function useMe() {
   }, []);
 
   useEffect(() => {
-    if (data?.user) {
-      setMe(data.user);
+    if (data) {
+      setServices(data);
     }
   }, [data]);
 
-  return { me, loading, error };
+  return { services, loading, error };
 }
