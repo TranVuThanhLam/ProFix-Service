@@ -1,11 +1,14 @@
 package models
 
-import "profix-service/internal/db"
+import (
+	"fmt"
+	"profix-service/internal/db"
+)
 
 type Booking struct {
 	Id          int64  `json:"id"`
 	UserId      int64  `json:"user_id"`
-	ServiceId   string `json:"service_id"`
+	ServiceId   int64 `json:"service_id"`
 	BookingTime string `json:"booking_time"`
 	Status      string `json:"status"`
 	TotalPrice  int `json:"total_price"`
@@ -13,10 +16,10 @@ type Booking struct {
 }
 
 func (b *Booking) Create() (int64, error) {
-	query := `INSERT INTO bookings (user_id, service_id, booking_time, status, total_price, created_at)
-			  VALUES (?, ?, ?, ?, ?, ?)`
-
-	result, err := db.DB.Exec(query, b.UserId, b.ServiceId, b.BookingTime, b.Status, b.TotalPrice, b.CreatedAt)
+	query := `INSERT INTO bookings (user_id, service_id, booking_time, total_price)
+			  VALUES (?, ?, ?, ?)`
+	fmt.Println(b)
+	result, err := db.DB.Exec(query, b.UserId, b.ServiceId, b.BookingTime, b.TotalPrice)
 	if err != nil {
 		return 0, err
 	}
@@ -67,4 +70,25 @@ func DeleteBooking(id int64) error {
 	query := `DELETE FROM bookings WHERE id = ?`
 	_, err := db.DB.Exec(query, id)
 	return err
+}
+
+// ============================================
+func GetAllBookingsByUserId(userid int64) ([]Booking, error) {
+	query := `SELECT id, user_id, service_id, booking_time, status, total_price, created_at FROM bookings WHERE user_id = ?`
+
+	rows, err := db.DB.Query(query, userid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var bookings []Booking
+	for rows.Next() {
+		var b Booking
+		if err := rows.Scan(&b.Id, &b.UserId, &b.ServiceId, &b.BookingTime, &b.Status, &b.TotalPrice, &b.CreatedAt); err != nil {
+			return nil, err
+		}
+		bookings = append(bookings, b)
+	}
+	return bookings, nil
 }

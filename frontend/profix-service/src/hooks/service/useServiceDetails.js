@@ -1,6 +1,6 @@
 // src/hooks/useServiceDetails.js
 import { useEffect, useState } from "react";
-import useApi from "../../api/useAPI";
+import useApi from "../api/useAPI";
 
 export default function useServiceDetails(id) {
   const { callApi, loading, error } = useApi();

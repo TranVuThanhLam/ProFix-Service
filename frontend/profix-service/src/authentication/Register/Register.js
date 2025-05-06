@@ -7,7 +7,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion"; // Import animation
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye,
+  faEyeSlash,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -102,153 +106,158 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div className="container-fluid">
+      <ToastContainer />
+
       <motion.div
-        className="d-flex"
-        initial={{ opacity: 0, x: -100 }} // Bắt đầu từ bên trái
-        animate={{ opacity: 1, x: 0 }} // Di chuyển vào giữa
-        exit={{ opacity: 0, x: 100 }} // Rời khỏi sang phải
+        className="row min-vh-100"
+        initial={{ opacity: 0, x: -100 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 100 }}
         transition={{ duration: 0.5 }}
       >
-        <ToastContainer />
-        <div className="main container d-flex align-items-center justify-content-center">
-          <div className="">
-            <div className="register-form">
-              <form onSubmit={handleRegister}>
-                <div className="input-group my-2">
-                  <span className="input-group-text">Name</span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Full Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  {errors.name && (
-                    <small className="text-danger">{errors.name}</small>
-                  )}
-                </div>
-                <div className="input-group my-2">
-                  <span className="input-group-text">Email</span>
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Email"
-                    value={email}
-                    required
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  {errors.email && (
-                    <small className="text-danger">{errors.email}</small>
-                  )}
-                </div>
-                <div className="input-group my-2">
-                  <span className="input-group-text">Phone</span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Phone Number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                  {errors.phone && (
-                    <small className="text-danger">{errors.phone}</small>
-                  )}
-                </div>
-                {/* ============================ */}
-                <div className="input-group my-2">
-                  <div className="input-group">
-                    <span className="input-group-text">Password</span>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      className="form-control"
-                      placeholder="Password"
-                      style={{ borderRight: 0 }}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <span
-                      className="input-group-text bg-white"
-                      style={{ cursor: "pointer", borderLeft: 0 }}
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      <FontAwesomeIcon
-                        icon={showPassword ? faEye : faEyeSlash}
-                      />
-                    </span>
-                  </div>
+        {/* Form section */}
+        <div className="col-lg-6 d-flex align-items-center justify-content-center p-5 bg-light">
+          <div className="w-100" style={{ maxWidth: "500px" }}>
+            <h2 className="text-center mb-4">Register</h2>
+            <form onSubmit={handleRegister}>
+              {/* Name */}
+              <div className="form-group mb-3">
+                <label>Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Full Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                {errors.name && (
+                  <small className="text-danger">{errors.name}</small>
+                )}
+              </div>
 
-                  {errors.password && (
-                    <small className="text-danger">{errors.password}</small>
-                  )}
-                </div>
-                <div className="input-group my-2">
-                  <div className="input-group">
-                    <span className="input-group-text">Confirm Password</span>
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      className="form-control"
-                      placeholder="Confirm Password"
-                      style={{ borderRight: 0 }}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                    <span
-                      className="input-group-text bg-white"
-                      style={{ cursor: "pointer", borderLeft: 0 }}
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                    >
-                      <FontAwesomeIcon
-                        icon={showConfirmPassword ? faEye : faEyeSlash}
-                      />
-                    </span>
-                  </div>
-                  {errors.confirmPassword && (
-                    <small className="text-danger">
-                      {errors.confirmPassword}
-                    </small>
-                  )}
-                </div>
+              {/* Email */}
+              <div className="form-group mb-3">
+                <label>Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {errors.email && (
+                  <small className="text-danger">{errors.email}</small>
+                )}
+              </div>
 
-                <div className="input-group my-2">
-                  <span className="input-group-text">Role</span>
-                  <select
+              {/* Phone */}
+              <div className="form-group mb-3">
+                <label>Phone</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Phone Number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+                {errors.phone && (
+                  <small className="text-danger">{errors.phone}</small>
+                )}
+              </div>
+
+              {/* Password */}
+              <div className="form-group mb-3">
+                <label>Password</label>
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
                     className="form-control"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <span
+                    className="input-group-text"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ cursor: "pointer" }}
                   >
-                    <option value="customer">Customer</option>
-                    <option value="provider">Provider</option>
-                  </select>
+                    <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                  </span>
                 </div>
-                <div className="mt-4">
-                  <button type="submit" className="btn btn-dark w-100 mb-2">
-                    Register
-                  </button>
-                  <div className="d-flex align-items-center my-2">
-                    <hr className="flex-grow-1" />
-                    <span className="mx-2">or</span>
-                    <hr className="flex-grow-1" />
-                  </div>
-                  <button
-                    onClick={() => navigate("/login")}
-                    className="btn btn-light w-100"
+                {errors.password && (
+                  <small className="text-danger">{errors.password}</small>
+                )}
+              </div>
+
+              {/* Confirm Password */}
+              <div className="form-group mb-3">
+                <label>Confirm Password</label>
+                <div className="input-group">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="form-control"
+                    placeholder="Confirm Password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <span
+                    className="input-group-text"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    style={{ cursor: "pointer" }}
                   >
-                    Login
-                  </button>
+                    <FontAwesomeIcon
+                      icon={showConfirmPassword ? faEye : faEyeSlash}
+                    />
+                  </span>
                 </div>
-              </form>
-            </div>
+                {errors.confirmPassword && (
+                  <small className="text-danger">
+                    {errors.confirmPassword}
+                  </small>
+                )}
+              </div>
+
+              {/* Role */}
+              <div className="form-group mb-4">
+                <label>Role</label>
+                <select
+                  className="form-control"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  <option value="customer">Customer</option>
+                  <option value="provider">Provider</option>
+                </select>
+              </div>
+
+              <button type="submit" className="btn btn-dark w-100 mb-2">
+                Register
+              </button>
+              <div className="d-flex align-items-center my-2">
+                <hr className="flex-grow-1" />
+                <span className="mx-2">or</span>
+                <hr className="flex-grow-1" />
+              </div>
+              <button
+                onClick={() => navigate("/login")}
+                className="btn btn-outline-dark w-100"
+              >
+                Login
+              </button>
+            </form>
           </div>
         </div>
-        <div className="sidenav d-flex align-items-center justify-content-center text-white text-center">
-          <div className="register-main-text">
-            <h1>ProFix Service</h1>
-            <h3>Register Page</h3>
-            <p>Create an account to get started.</p>
-          </div>
+
+        {/* Sidenav Section */}
+        <div className="col-lg-6 bg-dark text-white d-flex flex-column justify-content-center align-items-center text-center p-5">
+          {/* Nút Quay Lại Trang Chủ */}
+          <button className="btn btn-light m-3" onClick={() => navigate("/")}>
+            <FontAwesomeIcon icon={faArrowLeft} /> Back to Home
+          </button>
+          <h1 className="mb-3">ProFix Service</h1>
+          <h4 className="mb-3">Register Page</h4>
+          <p>Create an account to get started.</p>
         </div>
       </motion.div>
     </div>

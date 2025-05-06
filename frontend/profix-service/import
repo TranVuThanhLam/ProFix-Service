@@ -9,3 +9,5 @@ npm install react-toastify
 npm install bootstrap jquery
 
 npm install sweetalert2
+
+npm cache clean --force

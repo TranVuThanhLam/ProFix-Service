@@ -66,3 +66,22 @@ func DeleteService(id int64) error {
 	_, err := db.DB.Exec(query, id)
 	return err
 }
+
+func GetAllServicesByProviderId(providerId int64) ([]Service, error) {
+	query := `SELECT id, created_at, status, category, price, description, title, provider_id FROM services WHERE provider_id = ?`
+	rows, err := db.DB.Query(query, providerId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var services []Service
+	for rows.Next() {
+		var s Service
+		if err := rows.Scan(&s.ID, &s.CreatedAt, &s.Status, &s.Category, &s.Price, &s.Description, &s.Title, &s.ProviderId); err != nil {
+			return nil, err
+		}
+		services = append(services, s)
+	}
+	return services, nil
+}

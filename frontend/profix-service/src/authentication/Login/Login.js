@@ -137,7 +137,7 @@ const Login = () => {
         exit={{ opacity: 0, x: -100 }} // Rời khỏi sang trái
         transition={{ duration: 0.5 }}
       >
-        <div className="sidenav d-flex align-items-center justify-content-center text-white text-center">
+        <div className="sidenav d-flex align-items-center justify-content-center text-white text-center bg-dark">
           <div className="login-main-text">
             <h1>ProFix Service</h1>
             <h3>Login Page</h3>

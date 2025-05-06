@@ -8,6 +8,7 @@ import Chat from "./pages/Chat/Chat";
 import Services from "./components/Services/Services";
 import ProviderDashboard from "./pages/ProviderDashboard/ProviderDashboard";
 import ServiceDetail from "./components/Services/ServiceDetail/ServiceDetail";
+import MainLayout from "./layout/CustomerLayout/CustomerLayout";
 
 function MainRoutes() {
   return (
@@ -17,8 +18,22 @@ function MainRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/logout" element={<Logout />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/services/:id" element={<ServiceDetail />} />
+        <Route
+          path="/services"
+          element={
+            <MainLayout>
+              <Services />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/services/:id"
+          element={
+            <MainLayout>
+              <ServiceDetail />
+            </MainLayout>
+          }
+        />
         <Route path="/provider" element={<ProviderDashboard />} />
         <Route path="/chat" element={<Chat />} />
       </Routes>

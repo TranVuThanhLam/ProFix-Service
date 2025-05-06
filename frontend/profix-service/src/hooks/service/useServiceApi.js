@@ -1,4 +1,4 @@
-import useApi from "../../api/useAPI";
+import useApi from "../../hooks/api/useAPI";
 
 export default function useServiceApi() {
   const { data, loading, error, callApi } = useApi();

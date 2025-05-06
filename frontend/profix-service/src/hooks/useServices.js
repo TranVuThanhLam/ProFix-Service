@@ -1,6 +1,6 @@
 // src/hooks/useMe.js
 import { useEffect, useState } from "react";
-import useApi from "../api/useAPI";
+import useApi from "../hooks/api/useAPI";
 
 export default function useServices() {
   const { data, loading, error, callApi } = useApi();

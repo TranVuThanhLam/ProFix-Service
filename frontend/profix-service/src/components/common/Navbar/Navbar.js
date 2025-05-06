@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import useMe from "../../../hooks/useMe";
 function Navbar() {
   const navigate = useNavigate();
-  const { me, loading } = useMe();
+  const { me, loading } = useMe(true);
 
   const handleNavigation = (path) => {
     navigate(path);
