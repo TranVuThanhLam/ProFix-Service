@@ -8,22 +8,34 @@ import useMe from "../../hooks/useMe";
 import ProviderAddServiceModal from "../../components/Provider/ProviderAddServiceModal/ProviderAddServiceModal";
 
 export default function ProviderDashboard() {
-  const { user } = useMe();
+  const { me } = useMe();
   const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("services"); // 👈 mặc định tab hiển thị
+
+  const stats = [
+    { key: "services", title: "Dịch vụ", value: "12" },
+    { key: "todayBookings", title: "Đơn hôm nay", value: "5" },
+    { key: "processingBookings", title: "Đơn đang xử lý", value: "8" },
+    { key: "revenue", title: "Doanh thu", value: "12.000.000 đ" },
+  ];
 
   return (
     <ProviderLayout>
       <div className="container mt-4">
         {/* Thống kê tổng quan */}
         <div className="row mb-4 g-3">
-          {[
-            { title: "Dịch vụ", value: "12" },
-            { title: "Đơn hôm nay", value: "5" },
-            { title: "Đơn đang xử lý", value: "8" },
-            { title: "Doanh thu", value: "12.000.000 đ" },
-          ].map((item, idx) => (
-            <div className="col-12 col-md-3" key={idx}>
-              <div className="card shadow-sm text-center h-100">
+          {stats.map((item, idx) => (
+            <div
+              className="col-12 col-md-3"
+              key={idx}
+              onClick={() => setActiveTab(item.key)} // 👈 xử lý click
+              style={{ cursor: "pointer" }}
+            >
+              <div
+                className={`card shadow-sm text-center h-100 ${
+                  activeTab === item.key ? "border-primary" : ""
+                }`}
+              >
                 <div className="card-body">
                   <h5 className="card-title">{item.title}</h5>
                   <h2 className="fw-bold">{item.value}</h2>
@@ -61,11 +73,10 @@ export default function ProviderDashboard() {
           </div>
         </div>
 
-        {/* Bảng đơn đặt */}
-        <ProviderBookings />
-
-        {/* Bảng dịch vụ */}
-        <ProviderServices />
+        {/* Hiển thị component tương ứng */}
+        {activeTab === "services" && <ProviderServices />}
+        {(activeTab === "todayBookings" ||
+          activeTab === "processingBookings") && <ProviderBookings />}
       </div>
 
       {/* Modal thêm dịch vụ */}

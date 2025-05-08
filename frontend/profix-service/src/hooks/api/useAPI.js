@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import axiosClient from "./axiosClient";
@@ -9,53 +9,54 @@ export default function useApi() {
   const [error, setError] = useState(null);
   const controllerRef = useRef(null);
 
-  const callApi = async ({
-    method = "get",
-    url,
-    body = null,
-    config = {},
-    silent = false,
-    customErrorHandler = null, // ✨ Cho phép custom riêng
-  }) => {
-    setLoading(true);
-    setError(null);
+  const callApi = useCallback(
+    async ({
+      method = "get",
+      url,
+      body = null,
+      config = {},
+      silent = false,
+      customErrorHandler = null,
+    }) => {
+      setLoading(true);
+      setError(null);
 
-    if (controllerRef.current) {
-      controllerRef.current.abort();
-    }
-    controllerRef.current = new AbortController();
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+      controllerRef.current = new AbortController();
 
-    try {
-      const response = await axiosClient({
-        method,
-        url,
-        data: body,
-        signal: controllerRef.current.signal,
-        ...config,
-      });
-      setData(response.data);
-      return response.data;
-    } catch (err) {
-      if (axios.isCancel?.(err)) {
-        console.log("Request cancelled");
-      } else {
-        console.error(err);
-        setError(err);
-
-        // Nếu không silent và có lỗi thực sự
-        if (!silent) {
-          if (customErrorHandler) {
-            customErrorHandler(err); // ✨ Ưu tiên custom riêng trước
-          } else {
-            showDefaultError(err); // ✨ Còn không thì show lỗi mặc định
+      try {
+        const response = await axiosClient({
+          method,
+          url,
+          data: body,
+          signal: controllerRef.current.signal,
+          ...config,
+        });
+        setData(response.data);
+        return response.data;
+      } catch (err) {
+        if (axios.isCancel?.(err)) {
+          console.log("Request cancelled");
+        } else {
+          console.error(err);
+          setError(err);
+          if (!silent) {
+            if (customErrorHandler) {
+              customErrorHandler(err);
+            } else {
+              showDefaultError(err);
+            }
           }
         }
+        throw err;
+      } finally {
+        setLoading(false);
       }
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    []
+  ); // 👈 Quan trọng: dependencies rỗng để đảm bảo ổn định
 
   const showDefaultError = (err) => {
     const status = err?.response?.status;

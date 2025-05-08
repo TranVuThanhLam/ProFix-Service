@@ -9,7 +9,7 @@ import Services from "./components/Services/Services";
 import ProviderDashboard from "./pages/ProviderDashboard/ProviderDashboard";
 import ServiceDetail from "./components/Services/ServiceDetail/ServiceDetail";
 import MainLayout from "./layout/CustomerLayout/CustomerLayout";
-
+import HistoryBookings from "./pages/Customer/HistoryBookings/HistoryBookings";
 function MainRoutes() {
   return (
     <BrowserRouter>
@@ -36,6 +36,14 @@ function MainRoutes() {
         />
         <Route path="/provider" element={<ProviderDashboard />} />
         <Route path="/chat" element={<Chat />} />
+        <Route
+          path="/history-bookings"
+          element={
+            <MainLayout>
+              <HistoryBookings />
+            </MainLayout>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

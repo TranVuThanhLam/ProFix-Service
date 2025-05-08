@@ -13,6 +13,10 @@ type Booking struct {
 	Status      string `json:"status"`
 	TotalPrice  int `json:"total_price"`
 	CreatedAt   string `json:"created_at"`
+	// ========================
+	ServiceName string `json:"service_name"`
+	CustomerName string `json:"customer_name"`
+	ProviderName string `json:"provider_name"`
 }
 
 func (b *Booking) Create() (int64, error) {
@@ -73,8 +77,21 @@ func DeleteBooking(id int64) error {
 }
 
 // ============================================
-func GetAllBookingsByUserId(userid int64) ([]Booking, error) {
-	query := `SELECT id, user_id, service_id, booking_time, status, total_price, created_at FROM bookings WHERE user_id = ?`
+func GetAllBookingsByCustomerId(userid int64) ([]Booking, error) {
+	query := `		
+		SELECT 
+			b.id, b.user_id, b.service_id, b.booking_time, b.status, b.total_price, b.created_at,
+			s.title AS service_name,
+			cus.name AS customer_name,
+			prov.name AS provider_name
+		FROM 
+			bookings b
+		JOIN 
+			services s ON b.service_id = s.id
+		JOIN 
+			users cus ON b.user_id = cus.id
+		JOIN 
+			users prov ON s.provider_id = prov.id WHERE user_id = ?`
 
 	rows, err := db.DB.Query(query, userid)
 	if err != nil {
@@ -85,7 +102,51 @@ func GetAllBookingsByUserId(userid int64) ([]Booking, error) {
 	var bookings []Booking
 	for rows.Next() {
 		var b Booking
-		if err := rows.Scan(&b.Id, &b.UserId, &b.ServiceId, &b.BookingTime, &b.Status, &b.TotalPrice, &b.CreatedAt); err != nil {
+		if 		err := rows.Scan(
+			&b.Id, &b.UserId, &b.ServiceId, &b.BookingTime,
+			&b.Status, &b.TotalPrice, &b.CreatedAt,
+			&b.ServiceName, &b.CustomerName, &b.ProviderName,
+		); err != nil {
+			return nil, err
+		}
+		bookings = append(bookings, b)
+	}
+	return bookings, nil
+}
+
+func GetAllBookingsByProviderId(providerId int64) ([]Booking, error) {
+	query := `
+		SELECT 
+			b.id, b.user_id, b.service_id, b.booking_time, b.status, b.total_price, b.created_at,
+			s.title AS service_name,
+			cus.name AS customer_name,
+			prov.name AS provider_name
+		FROM 
+			bookings b
+		JOIN 
+			services s ON b.service_id = s.id
+		JOIN 
+			users cus ON b.user_id = cus.id
+		JOIN 
+			users prov ON s.provider_id = prov.id
+		WHERE 
+			s.provider_id = ?`
+
+	rows, err := db.DB.Query(query, providerId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var bookings []Booking
+	for rows.Next() {
+		var b Booking
+		err := rows.Scan(
+			&b.Id, &b.UserId, &b.ServiceId, &b.BookingTime,
+			&b.Status, &b.TotalPrice, &b.CreatedAt,
+			&b.ServiceName, &b.CustomerName, &b.ProviderName,
+		)
+		if err != nil {
 			return nil, err
 		}
 		bookings = append(bookings, b)

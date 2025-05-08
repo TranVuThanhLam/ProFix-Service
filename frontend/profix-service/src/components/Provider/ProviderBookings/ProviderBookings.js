@@ -1,22 +1,26 @@
+import useProviderBookings from "../../../hooks/booking/useProviderBookings";
+
 export default function ProviderBookings() {
-  const bookings = [
-    {
-      id: 1,
-      service_title: "Thay màn hình iPhone 12",
-      customer_name: "Nguyễn Văn A",
-      booking_time: "2025-04-28 14:00",
-      status: "pending",
-      total_price: 500000,
-    },
-    {
-      id: 2,
-      service_title: "Sửa điều hòa Panasonic",
-      customer_name: "Trần Thị B",
-      booking_time: "2025-04-28 15:30",
-      status: "confirmed",
-      total_price: 700000,
-    },
-  ];
+  const { bookings } = useProviderBookings();
+  console.log(bookings);
+  // const bookings = [
+  //   {
+  //     id: 1,
+  //     service_title: "Thay màn hình iPhone 12",
+  //     customer_name: "Nguyễn Văn A",
+  //     booking_time: "2025-04-28 14:00",
+  //     status: "pending",
+  //     total_price: 500000,
+  //   },
+  //   {
+  //     id: 2,
+  //     service_title: "Sửa điều hòa Panasonic",
+  //     customer_name: "Trần Thị B",
+  //     booking_time: "2025-04-28 15:30",
+  //     status: "confirmed",
+  //     total_price: 700000,
+  //   },
+  // ];
 
   const statusBadge = (status) => {
     switch (status) {
@@ -47,15 +51,21 @@ export default function ProviderBookings() {
               </tr>
             </thead>
             <tbody>
-              {bookings.map((b) => (
-                <tr key={b.id}>
-                  <td>{b.service_title}</td>
-                  <td>{b.customer_name}</td>
-                  <td>{b.booking_time}</td>
-                  <td>{statusBadge(b.status)}</td>
-                  <td>{b.total_price.toLocaleString()} đ</td>
+              {bookings && bookings.length > 0 ? (
+                bookings.map((b) => (
+                  <tr key={b.id}>
+                    <td>{b.service_name}</td>
+                    <td>{b.customer_name}</td>
+                    <td>{b.booking_time}</td>
+                    <td>{statusBadge(b.status)}</td>
+                    <td>{b.total_price.toLocaleString()} đ</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5">Không có đơn đặt nào</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

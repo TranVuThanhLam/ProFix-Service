@@ -1,28 +1,29 @@
-export default function ProviderServices() {
-  const services = [
-    {
-      id: 1,
-      title: "Thay màn hình iPhone 12",
-      price: 1200000,
-      category: "Điện thoại",
-      status: "available",
-    },
-    {
-      id: 2,
-      title: "Sửa điều hòa Panasonic",
-      price: 700000,
-      category: "Điều hòa",
-      status: "available",
-    },
-    {
-      id: 3,
-      title: "Thay pin Samsung S21",
-      price: 500000,
-      category: "Điện thoại",
-      status: "unavailable",
-    },
-  ];
+import useProviderServices from "../../../hooks/service/useProviderServices";
 
+export default function ProviderServices() {
+  const { services } = useProviderServices();
+  //   {
+  //     id: 1,
+  //     title: "Thay màn hình iPhone 12",
+  //     price: 1200000,
+  //     category: "Điện thoại",
+  //     status: "available",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Sửa điều hòa Panasonic",
+  //     price: 700000,
+  //     category: "Điều hòa",
+  //     status: "available",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Thay pin Samsung S21",
+  //     price: 500000,
+  //     category: "Điện thoại",
+  //     status: "unavailable",
+  //   },
+  // ];
   return (
     <div className="card shadow-sm mb-4">
       <div className="card-body">
@@ -38,22 +39,30 @@ export default function ProviderServices() {
               </tr>
             </thead>
             <tbody>
-              {services.map((s) => (
-                <tr key={s.id}>
-                  <td>{s.title}</td>
-                  <td>{s.price.toLocaleString()} đ</td>
-                  <td>{s.category}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        s.status === "available" ? "bg-success" : "bg-secondary"
-                      }`}
-                    >
-                      {s.status === "available" ? "Đang hiển thị" : "Ẩn"}
-                    </span>
-                  </td>
+              {services && services.length > 0 ? (
+                services.map((s) => (
+                  <tr key={s.id}>
+                    <td>{s.title}</td>
+                    <td>{s.price.toLocaleString()} đ</td>
+                    <td>{s.category}</td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          s.status === "available"
+                            ? "bg-success"
+                            : "bg-secondary"
+                        }`}
+                      >
+                        {s.status === "available" ? "Đang hiển thị" : "Ẩn"}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4">Không có service nào</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

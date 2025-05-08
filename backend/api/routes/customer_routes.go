@@ -9,7 +9,7 @@ import (
 func CustomerRoutes(r *gin.RouterGroup) {
 	customer := r.Group("/customer")
 	{
-		customer.GET("/bookings", services.GetAllBookingsByUserId)
+		customer.GET("/bookings/:customer_id", services.GetAllBookingsByCustomerId)
 	// 	customer.GET("/users", services.GetAllUsers)
 	// 	customer.GET("/users/:id", services.GetUserByID)
 	// 	customer.POST("/users", services.CreateUser)

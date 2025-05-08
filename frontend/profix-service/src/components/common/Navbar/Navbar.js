@@ -45,9 +45,9 @@ function Navbar() {
               <a
                 className="nav-link"
                 href="#"
-                onClick={() => handleNavigation("/about")}
+                onClick={() => handleNavigation("/provider")}
               >
-                About
+                Provider
               </a>
             </li>
             <li className="nav-item">
@@ -63,9 +63,9 @@ function Navbar() {
               <a
                 className="nav-link"
                 href="#"
-                onClick={() => handleNavigation("/contact")}
+                onClick={() => handleNavigation("/history-bookings")}
               >
-                Contact
+                History-Bookings
               </a>
             </li>
             <li className="nav-item">

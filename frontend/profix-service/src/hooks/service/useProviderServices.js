@@ -1,15 +1,18 @@
-// src/hooks/useProviderServices.js
 import { useEffect, useState } from "react";
-import useApi from "./api/useApi";
+import useApi from "./../api/useAPI";
+import useMe from "../useMe";
 
 export default function useProviderServices() {
-  const { callApi, loading, error } = useApi();
+  const { me, loading: meLoading } = useMe(); // 👈 lấy loading từ useMe
+  const { callApi, loading: apiLoading, error } = useApi();
   const [services, setServices] = useState([]);
 
   useEffect(() => {
     const fetchServices = async () => {
+      if (!me || meLoading) return;
+
       try {
-        const res = await callApi({ url: "/provider/services" });
+        const res = await callApi({ url: `/provider/services/${me.id}` });
         setServices(res);
       } catch (err) {
         console.error("Failed to fetch provider services:", err);
@@ -17,7 +20,7 @@ export default function useProviderServices() {
     };
 
     fetchServices();
-  }, []);
+  }, [me, meLoading, callApi]);
 
-  return { services, loading, error };
+  return { services, loading: apiLoading || meLoading, error };
 }
