@@ -27,6 +27,27 @@ function Chat() {
     socketUrl = `${protocol}://${window.location.hostname}/wss`;
   }
 
+  useEffect(() => {
+    if (!user.id || !receiverId) return;
+
+    const fetchMessages = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/chat/messages`,
+          {
+            params: { sender_id: user.id, receiver_id: receiverId },
+            withCredentials: true,
+          }
+        );
+        setMessages(res.data); // Lưu tin nhắn vào state
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+
+    fetchMessages();
+  }, [user.id, receiverId]); // Khi người dùng hoặc người nhận thay đổi, gọi API lấy tin nhắn
+
   const [sockets] = useState([socketUrl]);
   const [connectionStatus, setConnectionStatus] = useState("Đang kết nối...");
 

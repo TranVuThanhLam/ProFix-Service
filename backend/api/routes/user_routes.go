@@ -8,6 +8,7 @@ import (
 
 func UserRoutes(User *gin.RouterGroup) {
 	User.POST("/booking", services.CreateBooking)
+	User.GET("/chat/messages", services.GetMessages)
 	// User.GET("/user/:user_id", services.GetUserByID)
 	// User.GET("/user/:user_id/roles", services.GetUserRoles)
 	// User.GET("/user/:user_id/permissions", services.GetUserPermissions)

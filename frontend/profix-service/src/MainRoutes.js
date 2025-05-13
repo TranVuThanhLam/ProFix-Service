@@ -10,6 +10,8 @@ import ProviderDashboard from "./pages/ProviderDashboard/ProviderDashboard";
 import ServiceDetail from "./components/Services/ServiceDetail/ServiceDetail";
 import MainLayout from "./layout/CustomerLayout/CustomerLayout";
 import HistoryBookings from "./pages/Customer/HistoryBookings/HistoryBookings";
+import Personal from "./components/common/Personal/Personal";
+
 function MainRoutes() {
   return (
     <BrowserRouter>
@@ -41,6 +43,14 @@ function MainRoutes() {
           element={
             <MainLayout>
               <HistoryBookings />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/personal"
+          element={
+            <MainLayout>
+              <Personal />
             </MainLayout>
           }
         />

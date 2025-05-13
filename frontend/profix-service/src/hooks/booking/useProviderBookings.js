@@ -1,5 +1,5 @@
 // src/hooks/useProviderBookings.js
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import useApi from "../api/useAPI";
 import useMe from "../useMe";
 
@@ -8,20 +8,24 @@ export default function useProviderBookings() {
   const { callApi, loading: apiLoading, error } = useApi();
   const [bookings, setBookings] = useState([]);
 
-  useEffect(() => {
+  const fetchBookings = useCallback(async () => {
     if (!me || meLoading) return;
+    try {
+      const res = await callApi({ url: `/provider/bookings/${me.id}` });
+      setBookings(res);
+    } catch (err) {
+      console.error("Failed to fetch provider bookings:", err);
+    }
+  }, [me?.id, meLoading, callApi]);
 
-    const fetchBookings = async () => {
-      try {
-        const res = await callApi({ url: `/provider/bookings/${me.id}` });
-        setBookings(res);
-      } catch (err) {
-        console.error("Failed to fetch provider bookings:", err);
-      }
-    };
-
+  useEffect(() => {
     fetchBookings();
-  }, [me?.id, meLoading, callApi]); // ✅ OK sau khi callApi được memo hóa
+  }, [fetchBookings]);
 
-  return { bookings, loading: apiLoading || meLoading, error };
+  return {
+    bookings,
+    loading: apiLoading || meLoading,
+    error,
+    refetch: fetchBookings, // ✅ thêm refetch
+  };
 }

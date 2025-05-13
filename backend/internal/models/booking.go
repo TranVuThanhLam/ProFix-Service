@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"profix-service/internal/db"
+	"strings"
 )
 
 type Booking struct {
@@ -111,7 +112,7 @@ func GetAllBookingsByCustomerId(userid int64) ([]Booking, error) {
 		}
 		bookings = append(bookings, b)
 	}
-	return bookings, nil
+	return bookings, nil		
 }
 
 func GetAllBookingsByProviderId(providerId int64) ([]Booking, error) {
@@ -152,4 +153,24 @@ func GetAllBookingsByProviderId(providerId int64) ([]Booking, error) {
 		bookings = append(bookings, b)
 	}
 	return bookings, nil
+}
+
+func (b *Booking) UpdateFields(updates map[string]interface{}) error {
+	var setClauses []string
+	var args []interface{}
+
+	for field, value := range updates {
+		setClauses = append(setClauses, fmt.Sprintf("%s = ?", field))
+		args = append(args, value)
+	}
+
+	if len(setClauses) == 0 {
+		return fmt.Errorf("no valid fields to update")
+	}
+
+	args = append(args, b.Id)
+
+	query := fmt.Sprintf("UPDATE bookings SET %s WHERE id = ?", strings.Join(setClauses, ", "))
+	_, err := db.DB.Exec(query, args...)
+	return err
 }

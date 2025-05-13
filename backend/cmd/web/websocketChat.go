@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"profix-service/internal/db"
 	"profix-service/internal/utils"
 
 	"github.com/gin-gonic/gin"
@@ -74,21 +75,40 @@ func readMessages(client *Client) {
 		}
 
 		var payload struct {
-			SenderID     int    `json:"sender_id"`
-			ReceiverID   int    `json:"receiver_id"`
-			Content      string `json:"content"`
+			SenderID   int    `json:"sender_id"`
+			ReceiverID int    `json:"receiver_id"`
+			Content    string `json:"content"`
 		}
 
 		if err := json.Unmarshal(msg, &payload); err != nil {
 			continue
 		}
 
+		// Lưu tin nhắn vào cơ sở dữ liệu
+		err = saveMessageToDB(payload.SenderID, payload.ReceiverID, payload.Content)
+		if err != nil {
+			log.Println("Failed to save message to DB:", err)
+			continue
+		}
+
+		// Gửi tin nhắn cho người nhận qua WebSocket
 		receiverKey := fmt.Sprintf("%d-%s", payload.ReceiverID)
 		if receiver, ok := clients[receiverKey]; ok {
 			receiver.Send <- msg
 		}
 	}
 }
+
+// Hàm để lưu tin nhắn vào database
+func saveMessageToDB(senderID, receiverID int, content string) error {
+	query := `
+		INSERT INTO messages (sender_id, receiver_id, content)
+		VALUES (?, ?, ?)
+	`
+	_, err := db.DB.Exec(query, senderID, receiverID, content)
+	return err
+}
+
 
 func writeMessages(client *Client) {
 	for msg := range client.Send {

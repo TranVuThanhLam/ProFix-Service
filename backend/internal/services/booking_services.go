@@ -7,6 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type UpdateBookingInput struct {
+	Status      *string `json:"status"`
+	BookingTime *string `json:"booking_time"`
+	TotalPrice  *int    `json:"total_price"`
+}
+
+
 func CreateBooking(context *gin.Context) {
 	var booking models.Booking
 
@@ -49,4 +56,46 @@ func GetAllBookingsByProviderId(context *gin.Context) {
 	}
 	context.JSON(200, bookings)
 	
+}
+
+func UpdateBooking(context *gin.Context) {
+	bookingID, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		context.JSON(400, gin.H{"error": "Invalid booking ID"})
+		return
+	}
+
+	var input UpdateBookingInput
+	if err := context.ShouldBindJSON(&input); err != nil {
+		context.JSON(400, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	booking, err := models.GetBookingByID(bookingID)
+	if err != nil {
+		context.JSON(500, gin.H{"error": "Database error"})
+		return
+	}
+	if booking == nil {
+		context.JSON(404, gin.H{"error": "Booking not found"})
+		return
+	}
+
+	updates := make(map[string]interface{})
+	if input.Status != nil {
+		updates["status"] = *input.Status
+	}
+	if input.BookingTime != nil {
+		updates["booking_time"] = *input.BookingTime
+	}
+	if input.TotalPrice != nil {
+		updates["total_price"] = *input.TotalPrice
+	}
+
+	if err := booking.UpdateFields(updates); err != nil {
+		context.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(200, gin.H{"message": "Booking updated successfully"})
 }

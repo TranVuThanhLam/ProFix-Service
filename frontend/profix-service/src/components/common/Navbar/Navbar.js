@@ -77,6 +77,15 @@ function Navbar() {
                 Chat
               </a>
             </li>
+            <li className="nav-item">
+              <a
+                className="nav-link"
+                href="#"
+                onClick={() => handleNavigation("/personal")}
+              >
+                Personal
+              </a>
+            </li>
           </ul>
         </div>
 
