@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import defaultImage from "../../image/default-avatar.png";
 
 function Chat() {
   const [people, setPeople] = useState([]);
@@ -185,20 +186,32 @@ function Chat() {
               {people.map((person) => (
                 <div
                   key={person.id}
-                  className={`d-flex align-items-center p-2 mb-2 rounded ${
+                  className={`d-flex align-items-center gap-3 p-2 mb-2 rounded-3 ${
                     receiverId === person.id
-                      ? "bg-primary text-white fw-bold"
-                      : "bg-light"
+                      ? "bg-primary text-white"
+                      : "bg-white border"
                   }`}
                   style={{ cursor: "pointer" }}
                   onClick={() => setReceiverId(person.id)}
                 >
-                  <div
-                    className="bg-success rounded-circle me-3"
-                    style={{ width: "10px", height: "10px" }}
-                  ></div>
-                  {person.name}
-                  {person.id == user.id ? " (me) " : ""}
+                  <img
+                    src={person.image_url || defaultImage}
+                    alt={person.name}
+                    className="rounded-circle"
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      objectFit: "cover",
+                    }}
+                  />
+                  {isSidebarOpen && (
+                    <div>
+                      <div className="fw-semibold">{person.name}</div>
+                      <small className="text-muted">
+                        {person.id === user.id ? "(Bạn)" : "Đang hoạt động"}
+                      </small>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -226,25 +239,46 @@ function Chat() {
           style={{ background: "#f9fafb" }}
         >
           {receiverId ? (
-            messages
-              .filter(
+            (() => {
+              const safeMessages = Array.isArray(messages) ? messages : [];
+              const filteredMessages = safeMessages.filter(
                 (msg) =>
                   (msg.sender_id === user.id &&
                     msg.receiver_id === receiverId) ||
                   (msg.sender_id === receiverId && msg.receiver_id === user.id)
-              )
-              .map((msg, index) => (
+              );
+
+              if (filteredMessages.length === 0) {
+                return (
+                  <div className="text-muted text-center mt-5">
+                    <i className="bi bi-chat-left-text fs-1 mb-3 d-block text-secondary"></i>
+                    <p>Chưa có tin nhắn nào giữa bạn và người này.</p>
+                  </div>
+                );
+              }
+
+              return filteredMessages.map((msg, index) => (
                 <div
                   key={index}
-                  className={`py-2 px-3 mb-2 rounded-pill shadow-sm w-auto ${
+                  className={`d-flex ${
                     msg.sender_id === user.id
-                      ? "bg-primary text-white align-self-end"
-                      : "bg-secondary text-white align-self-start"
-                  }`}
+                      ? "justify-content-end"
+                      : "justify-content-start"
+                  } mb-2`}
                 >
-                  {msg.content}
+                  <div
+                    className={`px-3 py-2 rounded-4 shadow-sm ${
+                      msg.sender_id === user.id
+                        ? "bg-primary text-white"
+                        : "bg-light border"
+                    }`}
+                    style={{ maxWidth: "75%", wordWrap: "break-word" }}
+                  >
+                    {msg.content}
+                  </div>
                 </div>
-              ))
+              ));
+            })()
           ) : (
             <div className="text-center text-muted mt-5">
               <h5>👉 Vui lòng chọn người để bắt đầu chat!</h5>

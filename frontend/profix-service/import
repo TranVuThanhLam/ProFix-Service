@@ -13,3 +13,5 @@ npm install sweetalert2
 npm cache clean --force
 
 npm install moment
+
+npm install react-spinners

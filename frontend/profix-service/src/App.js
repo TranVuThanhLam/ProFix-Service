@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Main from "./Main";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import { AuthProvider } from "./context/AuthContext";
 function App() {
   return (
-    <div>
-      {/* <LoginPage /> */}
+    <AuthProvider>
       <Main />
-    </div>
+    </AuthProvider>
   );
 }
 

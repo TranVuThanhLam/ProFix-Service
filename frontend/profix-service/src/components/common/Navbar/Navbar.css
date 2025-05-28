@@ -1,0 +1,24 @@
+.navbar-brand strong {
+  font-size: 1.5rem;
+  color: #ffc107;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #f8f9fa !important;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #ffc107 !important;
+}
+
+.user-info {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.btn-outline-light:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}

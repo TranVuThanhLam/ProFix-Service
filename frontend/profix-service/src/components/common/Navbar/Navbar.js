@@ -1,137 +1,130 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import useMe from "../../../hooks/useMe";
-function Navbar() {
-  const navigate = useNavigate();
-  const { me, loading } = useMe(true);
+import { useAuth } from "../../../context/AuthContext";
+import Spinner from "../Spinner/Spinner";
+import "./Navbar.css";
 
-  const handleNavigation = (path) => {
-    navigate(path);
+function Navbar() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/logout");
   };
 
+  const isCustomer = user?.role === "customer";
+  const isProvider = user?.role === "provider";
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container-fluid d-flex justify-content-center align-items-center">
-        {/* Left Section */}
-        <div className="d-flex align-items-center justify-content-center">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+      <div className="container-fluid">
+        {/* Logo */}
+        <Link className="navbar-brand d-flex align-items-center" to="/">
           <img
-            src="image/profix-service-logo.png"
+            src="/image/profix-service-logo.png"
             alt="ProFix Logo"
-            style={{ width: "80px" }}
+            style={{ width: "50px", marginRight: "10px" }}
           />
-          <a
-            className="navbar-brand"
-            href="#"
-            onClick={() => handleNavigation("/")}
-          >
-            ProFix
-          </a>
-        </div>
+          <strong>ProFix</strong>
+        </Link>
 
-        {/* Center Section */}
-        <div className="collapse navbar-collapse d-flex justify-content-center">
-          <ul className="navbar-nav">
+        {/* Toggle (mobile) */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNavbar"
+          aria-controls="mainNavbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        {/* Main Links */}
+        <div className="collapse navbar-collapse" id="mainNavbar">
+          <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                onClick={() => handleNavigation("/")}
-              >
+              <Link className="nav-link" to="/">
                 Home
-              </a>
+              </Link>
             </li>
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                onClick={() => handleNavigation("/provider")}
-              >
-                Provider
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                onClick={() => handleNavigation("/services")}
-              >
-                Services
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                onClick={() => handleNavigation("/history-bookings")}
-              >
-                History-Bookings
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                onClick={() => handleNavigation("/chat")}
-              >
-                Chat
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                onClick={() => handleNavigation("/personal")}
-              >
-                Personal
-              </a>
-            </li>
-          </ul>
-        </div>
 
-        {/* Right Section */}
-        <div className="d-flex align-items-center justify-content-center">
-          <ul className="navbar-nav">
-            {!me ? (
+            {user?.name && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/chat">
+                  Chat
+                </Link>
+              </li>
+            )}
+
+            <li className="nav-item">
+              <Link className="nav-link" to="/providers">
+                Providers
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link className="nav-link" to="/services">
+                Services
+              </Link>
+            </li>
+
+            {isProvider && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/provider-dashboard">
+                  Dashboard
+                </Link>
+              </li>
+            )}
+
+            {isCustomer && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/history-bookings">
+                  Booking History
+                </Link>
+              </li>
+            )}
+          </ul>
+
+          {/* User Info & Actions */}
+          <ul className="navbar-nav ms-auto d-flex align-items-center">
+            {user?.name ? (
               <>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    href="#"
-                    onClick={() => handleNavigation("/login")}
-                  >
-                    Login
-                  </a>
+                <li className="nav-item user-info pe-2">
+                  <span className="text-white">
+                    {user.name} ({user.role})
+                  </span>
                 </li>
                 <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    href="#"
-                    onClick={() => handleNavigation("/register")}
+                  <Link
+                    className="btn btn-outline-warning btn-sm me-2"
+                    to="/personal"
                   >
-                    Register
-                  </a>
+                    Profile
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
                 </li>
               </>
             ) : (
               <>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    href="#"
-                    onClick={() => handleNavigation("/personal")}
-                  >
-                    {me.name}
-                  </a>
+                <li className="nav-item me-2">
+                  <Link className="btn btn-outline-light btn-sm" to="/login">
+                    Login
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    href="#"
-                    onClick={() => handleNavigation("/logout")}
-                  >
-                    Logout
-                  </a>
+                  <Link className="btn btn-warning btn-sm" to="/register">
+                    Register
+                  </Link>
                 </li>
               </>
             )}

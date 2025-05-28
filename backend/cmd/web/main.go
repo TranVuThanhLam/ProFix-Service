@@ -17,7 +17,7 @@ func main() {
 
 	server.Use(cors.New(cors.Config{
 		// Chỉ cho phép frontend truy cập
-		AllowOrigins:     []string{"http://localhost:3000", "https://desktop-b0d0j2q.tail04954f.ts.net"},
+		AllowOrigins:     []string{"http://localhost:3000", "https://desktop-b0d0j2q.tail04954f.ts.net", "http://localhost:81"},
 		// AllowAllOrigins:  true,	
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},

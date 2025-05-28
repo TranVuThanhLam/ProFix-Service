@@ -15,16 +15,18 @@ import {
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Login.style.css";
+import { useAuth } from "./../../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleNavigation = useCallback(
     (Role) => {
       console.log(Role);
       if (Role === "admin") {
         navigate("/admin");
-      } else if (Role === "provider") {
+      } else if (Role === "provider-dashboard") {
         navigate("/provider");
       } else if (Role === "customer") {
         navigate("/");
@@ -95,12 +97,15 @@ const Login = () => {
         axios
           .get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true })
           .then((res) => {
+            console.log(res.user);
+            login(res.data.user);
+
             setTimeout(() => {
               const userRole = res.data.user.role;
               if (userRole === "admin") {
                 navigate("/admin");
               } else if (userRole === "provider") {
-                navigate("/provider");
+                navigate("/provider-dashboard");
               } else if (userRole === "customer") {
                 navigate("/");
               } else {

@@ -6,7 +6,8 @@ import Home from "./pages/Home/Home";
 import Logout from "./utils/Logout";
 import Chat from "./pages/Chat/Chat";
 import Services from "./components/Services/Services";
-import ProviderDashboard from "./pages/ProviderDashboard/ProviderDashboard";
+import ProviderDashboard from "./pages/Provider/ProviderDashboard/ProviderDashboard";
+import Providers from "./pages/Provider/Providers/Providers";
 import ServiceDetail from "./components/Services/ServiceDetail/ServiceDetail";
 import MainLayout from "./layout/CustomerLayout/CustomerLayout";
 import HistoryBookings from "./pages/Customer/HistoryBookings/HistoryBookings";
@@ -36,7 +37,8 @@ function MainRoutes() {
             </MainLayout>
           }
         />
-        <Route path="/provider" element={<ProviderDashboard />} />
+        <Route path="/provider-dashboard" element={<ProviderDashboard />} />
+        <Route path="/providers" element={<Providers />} />
         <Route path="/chat" element={<Chat />} />
         <Route
           path="/history-bookings"
