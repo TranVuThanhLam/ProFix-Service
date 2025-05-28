@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import useServices from "../../hooks/useServices";
 import { motion } from "framer-motion";
+import defaultService from "../../image/default-service.jpg";
 
 export default function Services() {
   const { services, loading } = useServices();
@@ -87,11 +88,22 @@ export default function Services() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <div className="card h-100 shadow-sm border-0">
+              <div className="card h-100 border-0 shadow-sm service-card">
+                <img
+                  src={service.imageUrl || defaultService}
+                  alt={service.title}
+                  className="card-img-top"
+                  style={{
+                    height: "200px",
+                    objectFit: "cover",
+                    borderTopLeftRadius: "0.5rem",
+                    borderTopRightRadius: "0.5rem",
+                  }}
+                />
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title">{service.title}</h5>
                   <h6 className="card-subtitle mb-2 text-muted">
-                    {service.category}
+                    {service.category || "Không phân loại"}
                   </h6>
                   <p className="card-text flex-grow-1">
                     {service.description || "Không có mô tả"}
@@ -112,7 +124,6 @@ export default function Services() {
                     </span>
                   </div>
 
-                  {/* Nút xem chi tiết */}
                   <Link
                     to={`/services/${service.id}`}
                     className="btn btn-outline-primary mt-3"

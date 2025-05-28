@@ -10,17 +10,26 @@ import {
 import { motion } from "framer-motion";
 import { useState } from "react";
 import useCreateBooking from "../../../hooks/booking/useCreateBooking";
-import useMe from "../../../hooks/useMe";
 import Swal from "sweetalert2";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function ServiceDetail() {
   const { id } = useParams();
   const { service, loading, error } = useServiceDetails(id);
   const [bookingDate, setBookingDate] = useState({ date: "", time: "" });
   const createBooking = useCreateBooking();
-  const { me } = useMe();
+  const { user } = useAuth();
 
   const handleBooking = async () => {
+    if (!user) {
+      Swal.fire({
+        icon: "info",
+        title: "Chưa đăng nhập",
+        text: "Vui lòng đăng nhập để đặt dịch vụ.",
+      });
+      return;
+    }
+
     const { date, time } = bookingDate;
     if (!date || !time) {
       Swal.fire({
@@ -57,7 +66,7 @@ export default function ServiceDetail() {
     };
 
     const booking_time = formatToMySQLDateTime(selectedDateTime);
-    const user_id = me.id;
+    const user_id = user?.id;
     const total_price = service.price;
     const service_id = service.id;
 
